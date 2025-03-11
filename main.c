@@ -3,7 +3,11 @@
 #define ONE 1
 
 void print_one(){
-  printf("%u", ONE);
+  #ifdef ONE
+    printf("%u", ONE);
+  #else
+    printf("Ena ni definirana");
+  #endif
 }
 
 int main() {
