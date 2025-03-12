@@ -1,10 +1,15 @@
-all: build run
+all: build run #ok
 
-build:
-	gcc -o program main.c
+build: build_i build_s build_o  # gcc -o demo_gcc main.c
 
 run: 
-	./program
+	./demo_gcc
 
 clean: 
-	rm -rf program
+	rm -rf demo_gcc
+
+build_i:
+
+build_s:
+
+build_o:
