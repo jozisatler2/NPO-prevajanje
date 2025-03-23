@@ -1,0 +1,21 @@
+Primerjava 32-bitnega in 64-bitnega prevajanja - Jožef Satler
+-------------------------------------------------------------
+
+Za spremembo v 32-bitno prevajanje sem moral uporabiti zastavico 32 pri gcc in as. Pri povezovanju pa sem
+podal 32-bitni povezovalnik.
+
+Predprocesiranje:
+Uporabil sem linux ukaz diff, kjer sem podal obe .i datoteki in opazil, 
+da sta datoteki povsem enaki. To nakazuje, da pri predprocesiranju naša arhitektura ni pomembna.
+
+Prevajanje:
+Tukaj so se pojavile razlike v zbirni kodi, kjer je bila ena izmed teh, da so bili registri v 32-bitni
+arhitekturi poimenovani s eax, ebx, itd., medtem ko v 64-bitni pa s rax, rbx, ...
+
+Zbiranje:
+Za primerjavo sem najprej obe datoteki izpisal z "objdump -D" in ta izpis na standardni izhod shranil v datoteko.
+Nato sem ponovno uporabil ukaz diff za primerjavo. Pri 32 bitni je bil format datoteke elf32-i386 pri 64-bitnem pa elf64-x86-64.
+Opazimo tudi lahko, da so naslovi dvakrat daljši pri 64-bitnem.
+
+Povezovanje:
+Izpis se podobno razlikuje kot pri zbiranju, vendar se dodajo še dodatni ukazi zraven, kjer so podobne razlike od prej.
