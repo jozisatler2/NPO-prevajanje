@@ -45,6 +45,7 @@ jobs:
             echo "Napaka v prejsnjem opravilu"
             cat napaka.txt
             exit 1
+          fi
       
       - name: Priprava okolje
         run: |
