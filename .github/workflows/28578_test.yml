@@ -1,0 +1,61 @@
+name: Test
+
+on:
+  push:
+    branches: [ main, test ]
+
+jobs:
+  preveri-teste:
+    runs-on: self-hosted
+
+    steps:
+      - name: Preveri repozitorij    
+        uses: actions/checkout@v4
+      
+      - name: Preverjam teste
+        run: |
+          if ! [ -d "tests" ]; then
+            echo "Mapa za teste ne obstaja!" >&2
+            exit 1
+          fi 2> napaka.txt
+      
+      - name: Nalaganje napaka.txt
+        run: actions/upload-artifact@v4
+        with:
+         name: napaka.txt
+         path: napaka.txt
+
+  zazeni-teste:
+    runs-on: self-hosted
+    needs: preveri-teste
+
+    steps:
+      - name: Preveri repozitorij
+        uses: actions/checkout@v4
+
+      - name: Prenesi napaka.txt
+        uses: actions/download-artifact@v4
+        with:
+         name: napaka.txt
+         path: ./
+
+      - name: Preveri napake
+        run: |
+          if [ -s napaka.txt ]; then
+            echo "Napaka v prejsnjem opravilu"
+            cat napaka.txt
+            exit 1
+      
+      - name: Priprava okolje
+        run: |
+          make # prevede glavni program
+          cd tests
+          make # prevede teste
+
+      - name: Test 1
+        run: |
+          make run_test1
+      
+      - name: Test 2
+        run: |
+          make run_test2
