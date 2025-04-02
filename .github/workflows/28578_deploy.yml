@@ -1,0 +1,30 @@
+name: Deploy
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  REPO: ${{ secrets.REPO }}
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types:
+      - completed
+
+jobs:
+  vsebnik:
+    runs-on: self-hosted
+    steps:
+
+      - name: Preveri repozitorij
+        uses: actions/checkout@v4
+      
+      - name: Nalozi na Docker Hub
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+          registry: docker.io
+          dockerfile: Dockerfile
+          tags: latest
+          image: ${{env.DOCKER_USERNAME}}/${{ env.REPO }}
