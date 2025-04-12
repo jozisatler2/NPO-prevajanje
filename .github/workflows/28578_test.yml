@@ -2,24 +2,24 @@ name: Test
 
 on:
   push:
-    branches: [ main, test ]
+    branches: [ main ] # začne se ob potisku na glavno vejo
 
 jobs:
   preveri-teste:
-    runs-on: self-hosted
+    runs-on: self-hosted # za izvajanje uporabljam lastnega runnerja
 
     steps:
       - name: Preveri repozitorij    
         uses: actions/checkout@v4
       
-      - name: Preverjam teste
+      - name: Preverjam teste # preveri če obstaja mapa "tests", če ne to napako shrani v napaka.txt
         run: |
           if ! [ -d "tests" ]; then
             echo "Mapa za teste ne obstaja!" >&2
             exit 1
           fi 2> napaka.txt
-      
-      - name: Nalaganje napaka.txt
+
+      - name: Nalaganje napaka.txt # naloži datoteko napaka.txt kot artifakt
         uses: actions/upload-artifact@v4
         with:
          name: napaka.txt
@@ -33,13 +33,13 @@ jobs:
       - name: Preveri repozitorij
         uses: actions/checkout@v4
 
-      - name: Prenesi napaka.txt
+      - name: Prenesi napaka.txt # iz Githuba prenese napaka.txt kot artifakt
         uses: actions/download-artifact@v4
         with:
          name: napaka.txt
          path: ./
 
-      - name: Preveri napake
+      - name: Preveri napake # v kolikor je napaka.txt prazna, potem ni napake in nadaljuje
         run: |
           if [ -s napaka.txt ]; then
             echo "Napaka v prejsnjem opravilu"
@@ -47,18 +47,18 @@ jobs:
             exit 1
           fi
       
-      - name: Priprava okolje
+      - name: Priprava okolje # prevede testne C programe
         run: |
           make # prevede glavni program
           cd tests
           make # prevede teste
 
-      - name: Test 1
+      - name: Test 1 # zažene prvi test
         run: |
           cd tests
           make run_test1
       
-      - name: Test 2
+      - name: Test 2 # zažene drugi test
         run: |
           cd tests
           make run_test2

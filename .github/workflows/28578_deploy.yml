@@ -1,11 +1,11 @@
 name: Deploy
 
-env:
+env: # ta gesla se skrivno hranijo na GitHubu repozitoriju
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   REPO: ${{ secrets.REPO }}
 
-on:
+on: # ko se končajo testi
   workflow_run:
     workflows: ["Test"]
     types:
@@ -14,17 +14,17 @@ on:
 jobs:
   vsebnik:
     runs-on: self-hosted
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} # izvede se samo če so testi uspešni
     strategy:
       matrix:
-        versions: ["22.04", "24.04"]
+        versions: ["22.04", "24.04"] # določimo za katere ubuntu verzije bomo gradili slike
     steps:
 
       - name: Preveri repozitorij
         uses: actions/checkout@v4
       
-      - name: Nalozi na Docker Hub
-        uses: mr-smithers-excellent/docker-build-push@v6
+      - name: Nalozi na Docker Hub 
+        uses: mr-smithers-excellent/docker-build-push@v6 # ustvari docker slike za določene ubuntu verzije in jih naloži na DockerHub
         with:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
@@ -32,4 +32,4 @@ jobs:
           dockerfile: Dockerfile
           tags: ${{ matrix.versions }}
           image: ${{env.DOCKER_USERNAME}}/${{ env.REPO }}
-          buildArgs: UBUNTU_VERSION=${{ matrix.versions }}
+          buildArgs: UBUNTU_VERSION=${{ matrix.versions }} # ubuntu verzija se poda v Dockerfile
