@@ -14,6 +14,9 @@ on:
 jobs:
   vsebnik:
     runs-on: self-hosted
+    strategy:
+      matrix:
+        versions: ["20.04", "22.04", "24.04"]
     steps:
 
       - name: Preveri repozitorij
@@ -26,5 +29,6 @@ jobs:
           password: ${{ env.DOCKER_PASSWORD }}
           registry: docker.io
           dockerfile: Dockerfile
-          tags: latest
+          tags: ${{ matrix.versions }}
           image: ${{env.DOCKER_USERNAME}}/${{ env.REPO }}
+          build-args: UBUNTU_VERSION=${{ matrix.versions }}
