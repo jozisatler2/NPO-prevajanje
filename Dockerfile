@@ -1,8 +1,9 @@
-FROM gcc:latest
+ARG UBUNTU_VERSION=24.04
+FROM ubuntu:${UBUNTU_VERSION}
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y gcc-multilib libc6-dev-i386
+RUN apt-get update && apt-get install -y gcc make
 
 COPY main.c .
 COPY Makefile .
