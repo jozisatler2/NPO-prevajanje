@@ -12,5 +12,8 @@ int main() {
 
     if (strcmp(output, "1") != 0) {
         printf("Program ne izpise 1!\n");
+        return 1;
     }
+
+    return 0;
 }
