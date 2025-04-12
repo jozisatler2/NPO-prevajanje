@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define ONE 2
+#define ONE 1
 
 void print_one(){
   #ifdef ONE
